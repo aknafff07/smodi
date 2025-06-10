@@ -110,6 +110,23 @@ class _LoginFormState extends State<LoginForm> {
                 ? const CircularProgressIndicator(color: Colors.white)
                 : const Text('Login', style: TextStyle(fontSize: 18)),
           ),
+          TextButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Logging in as guest... (Dummy)")),
+              );
+              Navigator.of(context).pushReplacementNamed('/home'); // Langsung ke Home
+            },
+            child: const Text(
+              "Login as Guest",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                decoration: TextDecoration.underline,
+                decorationColor: Colors.white,
+              ),
+            ),
+          ),
         ],
       ),
     );

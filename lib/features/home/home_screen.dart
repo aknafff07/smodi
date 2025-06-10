@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:smodi/core/constants/colors.dart';
 import 'package:smodi/features/home/widgets/feature_card.dart';
+import 'package:smodi/features/f1_focus/screens/focus_session_screen.dart';
+import 'package:smodi/features/f2_activity_insights/screens/activity_insight_screen.dart';// Import F2 screen
 import 'package:smodi/features/common_widgets/coming_soon_screen.dart'; // Import placeholder screen
 
 class HomeScreen extends StatefulWidget {
@@ -90,29 +92,25 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 32),
             // Kartu "Deep Focus"
             FeatureCard(
-              title: 'Deep Focus',
+              title: 'deep focus',
               subtitle: 'Configuration',
-              icon: Icons.lightbulb_outline, // Contoh ikon
+              icon: Icons.lightbulb_outline,
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Deep Focus clicked!')),
-                );
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ComingSoonScreen(featureName: 'Deep Focus (F1)')));
+                // Ganti ini untuk menavigasi ke FocusSessionScreen
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FocusSessionScreen()));
               },
-              backgroundColor: const Color(0xFF1A237E), // Biru gelap
+              backgroundColor: const Color(0xFF1A237E),
             ),
             const SizedBox(height: 20),
             // Kartu "Activity and Productivity Tracker"
             FeatureCard(
-              title: 'Activity and Productivity Tracker',
-              icon: Icons.timer_outlined, // Contoh ikon jam
+              title: 'activity and productivity tracker',
+              icon: Icons.timer_outlined,
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Activity Tracker clicked!')),
-                );
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ComingSoonScreen(featureName: 'Activity & AI Insights (F2)')));
+                // Ganti ini untuk menavigasi ke ActivityInsightsScreen
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ActivityInsightsScreen()));
               },
-              backgroundColor: const Color(0xFF8BC34A), // Hijau terang
+              backgroundColor: const Color(0xFF8BC34A),
             ),
             const SizedBox(height: 20),
             // Kartu "Camera Visual and Control"
@@ -247,27 +245,21 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           _buildDrawerMenuItem(
             context,
-            title: 'Deep Focus',
+            title: 'deep focus',
             subtitle: 'Configuration',
             icon: Icons.lightbulb_outline,
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Drawer: Deep Focus clicked!')),
-              );
               Navigator.pop(context); // Tutup drawer
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ComingSoonScreen(featureName: 'Deep Focus (F1)')));
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FocusSessionScreen())); // <--- Navigasi ke sini
             },
           ),
           _buildDrawerMenuItem(
             context,
-            title: 'Activity and Productivity Tracker',
+            title: 'activity and productivity tracker',
             icon: Icons.timer_outlined,
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Drawer: Activity Tracker clicked!')),
-              );
-              Navigator.pop(context);
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ComingSoonScreen(featureName: 'Activity & AI Insights (F2)')));
+              Navigator.pop(context); // Tutup drawer
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ActivityInsightsScreen())); // <--- Navigasi ke sini
             },
           ),
           _buildDrawerMenuItem(
