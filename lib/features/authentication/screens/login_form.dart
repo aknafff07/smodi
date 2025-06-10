@@ -95,9 +95,9 @@ class _LoginFormState extends State<LoginForm> {
                 child: const Text(
                   'Forgot password?',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.deepPurpleAccent,
                     decoration: TextDecoration.underline,
-                    decorationColor: Colors.white,
+                    decorationColor: Colors.deepPurpleAccent,
                   ),
                 ),
               ),
@@ -108,7 +108,7 @@ class _LoginFormState extends State<LoginForm> {
             onPressed: _isLoading ? null : _handleLogin,
             child: _isLoading
                 ? const CircularProgressIndicator(color: Colors.white)
-                : const Text('Done', style: TextStyle(fontSize: 18)),
+                : const Text('Login', style: TextStyle(fontSize: 18)),
           ),
         ],
       ),

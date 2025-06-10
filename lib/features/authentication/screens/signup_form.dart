@@ -85,7 +85,7 @@ class _SignUpFormState extends State<SignUpForm> {
             onPressed: _isLoading ? null : _handleSignUp,
             child: _isLoading
                 ? const CircularProgressIndicator(color: Colors.white)
-                : const Text('Done', style: TextStyle(fontSize: 18)),
+                : const Text('Sign Up', style: TextStyle(fontSize: 18)),
           ),
         ],
       ),

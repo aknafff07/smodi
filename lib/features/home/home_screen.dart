@@ -33,13 +33,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Background gelap sesuai desain
+      backgroundColor: Colors.white, // Background gelap sesuai desain
       appBar: AppBar(
-        backgroundColor: Colors.black, // App bar juga gelap
+        backgroundColor: Colors.white, // App bar juga gelap
         elevation: 0,
         leading: Builder(
           builder: (context) => IconButton(
-            icon: const Icon(Icons.menu, color: Colors.white), // Icon hamburger
+            icon: const Icon(Icons.menu, color: Colors.black), // Icon hamburger
             onPressed: () {
               Scaffold.of(context).openDrawer(); // Buka drawer
             },
@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.person_outline, color: Colors.white), // Icon profil
+            icon: const Icon(Icons.person_outline, color: Colors.black), // Icon profil
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Profile icon clicked! (Coming Soon)')),
@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
             const Text(
@@ -76,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 8),
@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
               'Ready to learn?', // Atau 'Ready to start!'
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.white70,
+                color: Colors.black54,
               ),
             ),
             const SizedBox(height: 32),
@@ -172,27 +172,27 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black, // Latar belakang gelap
-        selectedItemColor: AppColors.accentColor, // Warna ikon terpilih (kuning)
-        unselectedItemColor: Colors.white54, // Warna ikon tidak terpilih
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.folder_open), // Ikon folder
-            label: 'Activity',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history), // Ikon history/reload
-            label: 'History',
-          ),
-        ],
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   backgroundColor: Colors.black, // Latar belakang gelap
+      //   selectedItemColor: AppColors.accentColor, // Warna ikon terpilih (kuning)
+      //   unselectedItemColor: Colors.white54, // Warna ikon tidak terpilih
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.folder_open), // Ikon folder
+      //       label: 'Activity',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.history), // Ikon history/reload
+      //       label: 'History',
+      //     ),
+      //   ],
+      // ),
     );
   }
 
