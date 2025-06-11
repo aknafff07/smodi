@@ -29,9 +29,9 @@ class _IoTDeviceSettingsScreenState extends State<IoTDeviceSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.headingText,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.headingText,
         foregroundColor: Colors.white,
         elevation: 0,
         title: const Text('Manage IoT Devices'),

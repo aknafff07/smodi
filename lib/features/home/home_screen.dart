@@ -37,13 +37,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Background gelap sesuai desain
+      backgroundColor: AppColors.headingText, // Background gelap sesuai desain
       appBar: AppBar(
-        backgroundColor: Colors.white, // App bar juga gelap
+        backgroundColor: AppColors.headingText, // App bar juga gelap
         elevation: 0,
         leading: Builder(
           builder: (context) => IconButton(
-            icon: const Icon(Icons.menu, color: Colors.black), // Icon hamburger
+            icon: const Icon(Icons.menu, color: Colors.white), // Icon hamburger
             onPressed: () {
               Scaffold.of(context).openDrawer(); // Buka drawer
             },
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.person_outline, color: Colors.black), // Icon profil
+            icon: const Icon(Icons.person_outline, color: Colors.white), // Icon profil
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Profile icon clicked! (Coming Soon)')),
@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
             const Text(
@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
             const SizedBox(height: 8),
@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
               'Ready to learn?', // Atau 'Ready to start!'
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.black54,
+                color: Colors.white70,
               ),
             ),
             const SizedBox(height: 32),
@@ -195,21 +195,21 @@ class _HomeScreenState extends State<HomeScreen> {
   // Widget untuk Navigation Drawer
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
-      backgroundColor: const Color(0xFF1E1E1E), // Warna drawer gelap
+      backgroundColor: AppColors.headingText, // Warna drawer gelap
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
             decoration: const BoxDecoration(
-              color: Colors.black, // Warna header drawer
+              color: AppColors.headingText, // Warna header drawer
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundColor: AppColors.accentColor,
-                  child: Icon(Icons.person, size: 40, color: AppColors.primaryColor),
+                  backgroundColor: AppColors.tabIndicatorColor,
+                  child: Icon(Icons.person, size: 40, color: AppColors.headingText),
                 ),
                 const SizedBox(height: 10),
                 const Text(
@@ -306,13 +306,13 @@ class _HomeScreenState extends State<HomeScreen> {
         bool isActive = false,
       }) {
     return Container(
-      color: isActive ? Colors.yellow.withOpacity(0.2) : Colors.transparent, // Warna latar belakang jika aktif
+      color: isActive ? Colors.white.withOpacity(0.2) : Colors.transparent, // Warna latar belakang jika aktif
       child: ListTile(
-        leading: Icon(icon, color: isActive ? AppColors.accentColor : Colors.white54),
+        leading: Icon(icon, color: isActive ? AppColors.tabIndicatorColor : Colors.white54),
         title: Text(
           title,
           style: TextStyle(
-            color: isActive ? AppColors.accentColor : Colors.white,
+            color: isActive ? AppColors.tabIndicatorColor : Colors.white,
             fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
           ),
         ),
@@ -324,7 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
             : null,
         onTap: onTap,
         trailing: isActive
-            ? Icon(Icons.keyboard_arrow_right, color: AppColors.accentColor) // Indikator jika aktif
+            ? Icon(Icons.keyboard_arrow_right, color: AppColors.tabIndicatorColor) // Indikator jika aktif
             : null,
       ),
     );

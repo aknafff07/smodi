@@ -48,9 +48,9 @@ class _ActivityInsightsScreenState extends State<ActivityInsightsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.headingText,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.headingText,
         foregroundColor: Colors.white,
         elevation: 0,
         title: const Text('Activity & AI Insights (F2)'),
@@ -262,7 +262,7 @@ class _ActivityInsightsScreenState extends State<ActivityInsightsScreen> {
       },
       selectedColor: AppColors.accentColor,
       labelStyle: TextStyle(
-        color: _selectedPeriod == period ? AppColors.primaryColor : Colors.white,
+        color: _selectedPeriod == period ? AppColors.primaryColor : Colors.black,
       ),
       backgroundColor: Colors.white.withOpacity(0.1),
       shape: RoundedRectangleBorder(

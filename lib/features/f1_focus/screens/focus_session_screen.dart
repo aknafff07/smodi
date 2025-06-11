@@ -100,9 +100,9 @@ class _FocusSessionScreenState extends State<FocusSessionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.headingText,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.headingText,
         foregroundColor: Colors.white,
         elevation: 0,
         title: const Text('Deep Focus (F1)'),

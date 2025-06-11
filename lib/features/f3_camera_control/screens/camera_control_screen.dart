@@ -108,9 +108,9 @@ class _CameraControlScreenState extends State<CameraControlScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.headingText,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.headingText,
         foregroundColor: Colors.white,
         elevation: 0,
         title: const Text('Camera Control (F3)'),
