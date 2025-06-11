@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smodi/core/constants/colors.dart';
 import 'package:smodi/features/home/widgets/feature_card.dart';
+import 'package:smodi/features/user_profile/screens/user_profile_screen.dart'; // Import UserProfileScreen
 import 'package:smodi/features/f1_focus/screens/focus_session_screen.dart';
 import 'package:smodi/features/f2_activity_insights/screens/activity_insight_screen.dart';// Import F2 screen
 import 'package:smodi/features/f3_camera_control/screens/camera_control_screen.dart'; // Import F3 screen
@@ -53,10 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.person_outline, color: Colors.white), // Icon profil
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Profile icon clicked! (Coming Soon)')),
-              );
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ComingSoonScreen(featureName: 'User Profile')));
+              // Ganti navigasi ke UserProfileScreen
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const UserProfileScreen()));
             },
           ),
         ],
@@ -137,33 +136,6 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               backgroundColor: const Color(0xFF607D8B), // Abu-abu kebiruan
             ),
-            // const SizedBox(height: 30),
-            // // Bagian "Configuration" dan "bla bla bla"
-            // // Desainnya menunjukkan ini adalah deskripsi umum atau info tambahan.
-            // // Bisa berupa teks statis atau informasi dinamis.
-            // const Text(
-            //   'configuration',
-            //   style: TextStyle(
-            //     fontSize: 18,
-            //     fontWeight: FontWeight.bold,
-            //     color: Colors.white,
-            //   ),
-            // ),
-            // const SizedBox(height: 8),
-            // const Text(
-            //   'bla bal bla',
-            //   style: TextStyle(
-            //     fontSize: 14,
-            //     color: Colors.white70,
-            //   ),
-            // ),
-            // const Text(
-            //   'bla bla :',
-            //   style: TextStyle(
-            //     fontSize: 14,
-            //     color: Colors.white70,
-            //   ),
-            // ),
             const SizedBox(height: 20),
           ],
         ),

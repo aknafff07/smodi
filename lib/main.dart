@@ -4,6 +4,7 @@ import 'package:smodi/features/home/home_screen.dart'; // Pastikan ini diimpor
 import 'package:smodi/features/authentication/screens/auth_main_screen.dart';
 import 'package:smodi/features/onboarding/onboarding_screen.dart';
 import 'package:smodi/core/constants/colors.dart';
+import 'package:smodi/features/user_profile/screens/user_profile_screen.dart'; // Import UserProfileScreen
 
 import 'features/f1_focus/screens/focus_session_screen.dart';
 import 'features/f2_activity_insights/screens/activity_insight_screen.dart';
@@ -85,6 +86,7 @@ class MyApp extends StatelessWidget {
         '/settings': (context) => const SettingsScreen(),
         '/settings/profile': (context) => const ProfileSettingsScreen(),
         '/settings/iot_devices': (context) => const IoTDeviceSettingsScreen(),
+        '/user_profile': (context) => const UserProfileScreen(),
         // Anda bisa menambahkan rute lain di sini
       },
     );
