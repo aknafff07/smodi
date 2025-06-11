@@ -3,7 +3,14 @@ import 'package:smodi/features/splash/splash_screen.dart';
 import 'package:smodi/features/home/home_screen.dart'; // Pastikan ini diimpor
 import 'package:smodi/features/authentication/screens/auth_main_screen.dart';
 import 'package:smodi/features/onboarding/onboarding_screen.dart';
-import 'package:smodi/core/constants/colors.dart'; // Import colors for theme
+import 'package:smodi/core/constants/colors.dart';
+
+import 'features/f1_focus/screens/focus_session_screen.dart';
+import 'features/f2_activity_insights/screens/activity_insight_screen.dart';
+import 'features/f3_camera_control/screens/camera_control_screen.dart'; // Import colors for theme
+import 'package:smodi/features/f4_settings/screens/settings_screen.dart'; // Import F4 main screen
+import 'package:smodi/features/f4_settings/screens/profile_settings_screen.dart'; // Import sub-screen
+import 'package:smodi/features/f4_settings/screens/iot_device_settings_screen.dart'; // Import sub-screen
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,6 +79,12 @@ class MyApp extends StatelessWidget {
         '/auth': (context) => const AuthMainScreen(),
         '/home': (context) => const HomeScreen(),
         '/onboarding': (context) => const OnboardingScreen(),
+        '/focus_session': (context) => const FocusSessionScreen(),
+        '/activity_insights': (context) => const ActivityInsightsScreen(),
+        '/camera_control': (context) => const CameraControlScreen(),
+        '/settings': (context) => const SettingsScreen(),
+        '/settings/profile': (context) => const ProfileSettingsScreen(),
+        '/settings/iot_devices': (context) => const IoTDeviceSettingsScreen(),
         // Anda bisa menambahkan rute lain di sini
       },
     );

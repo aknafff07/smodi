@@ -3,6 +3,8 @@ import 'package:smodi/core/constants/colors.dart';
 import 'package:smodi/features/home/widgets/feature_card.dart';
 import 'package:smodi/features/f1_focus/screens/focus_session_screen.dart';
 import 'package:smodi/features/f2_activity_insights/screens/activity_insight_screen.dart';// Import F2 screen
+import 'package:smodi/features/f3_camera_control/screens/camera_control_screen.dart'; // Import F3 screen
+import 'package:smodi/features/f4_settings/screens/settings_screen.dart'; // Import F4 screen
 import 'package:smodi/features/common_widgets/coming_soon_screen.dart'; // Import placeholder screen
 
 class HomeScreen extends StatefulWidget {
@@ -115,27 +117,23 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 20),
             // Kartu "Camera Visual and Control"
             FeatureCard(
-              title: 'Camera Visual and Control',
+              title: 'camera visual and control',
               subtitle: 'Configuration',
-              icon: Icons.camera_alt_outlined, // Contoh ikon kamera
+              icon: Icons.camera_alt_outlined,
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Camera Control clicked!')),
-                );
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ComingSoonScreen(featureName: 'Camera Control (F3)')));
+                // Ganti ini untuk menavigasi ke CameraControlScreen
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CameraControlScreen()));
               },
               backgroundColor: const Color(0xFF009688), // Teal
             ),
             const SizedBox(height: 20),
             // Kartu "Settings and Personalization"
             FeatureCard(
-              title: 'Settings and Personalization',
-              icon: Icons.settings_outlined, // Contoh ikon pengaturan
+              title: 'settings and personalization',
+              icon: Icons.settings_outlined,
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Settings clicked!')),
-                );
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ComingSoonScreen(featureName: 'Settings & Personalization (F4)')));
+                // Ganti ini untuk menavigasi ke SettingsScreen
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
               },
               backgroundColor: const Color(0xFF607D8B), // Abu-abu kebiruan
             ),
@@ -264,27 +262,21 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           _buildDrawerMenuItem(
             context,
-            title: 'Camera Visual and Control',
+            title: 'camera visual and control',
             subtitle: 'Configuration',
             icon: Icons.camera_alt_outlined,
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Drawer: Camera Control clicked!')),
-              );
-              Navigator.pop(context);
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ComingSoonScreen(featureName: 'Camera Control (F3)')));
+              Navigator.pop(context); // Tutup drawer
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CameraControlScreen())); // <--- Navigasi ke sini
             },
           ),
           _buildDrawerMenuItem(
             context,
-            title: 'Settings and Personalization',
+            title: 'settings and personalization',
             icon: Icons.settings_outlined,
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Drawer: Settings clicked!')),
-              );
-              Navigator.pop(context);
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ComingSoonScreen(featureName: 'Settings & Personalization (F4)')));
+              Navigator.pop(context); // Tutup drawer
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SettingsScreen())); // <--- Navigasi ke sini
             },
           ),
           const Divider(color: Colors.white24), // Pemisah
