@@ -8,6 +8,7 @@ class AppColors {
   static const Color successColor = Color(0xFF4CAF50); // Hijau
   static const Color errorColor = Color(0xFFF44336); // Merah
   static const Color warningColor = Color(0xFFFF9800); // Oranye
+  static const Color warnaOren = Color(0xFFFDB69F);
 
   // Warna gradien dari desain UI
   static const List<Color> splashGradient = [

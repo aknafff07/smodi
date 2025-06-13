@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
         leading: Builder(
           builder: (context) => IconButton(
-            icon: const Icon(Icons.menu, color: Colors.white), // Icon hamburger
+            icon: const Icon(Icons.menu, color: Colors.red), // Icon hamburger
             onPressed: () {
               Scaffold.of(context).openDrawer(); // Buka drawer
             },
@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 32),
             // Kartu "Deep Focus"
             FeatureCard(
-              title: 'deep focus',
+              title: 'Deep Focus',
               subtitle: 'Configuration',
               icon: Icons.lightbulb_outline,
               onTap: () {
@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 20),
             // Kartu "Activity and Productivity Tracker"
             FeatureCard(
-              title: 'activity and productivity tracker',
+              title: 'Activity and Productivity Tracker',
               icon: Icons.timer_outlined,
               onTap: () {
                 // Ganti ini untuk menavigasi ke ActivityInsightsScreen
@@ -116,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 20),
             // Kartu "Camera Visual and Control"
             FeatureCard(
-              title: 'camera visual and control',
+              title: 'Camera Visual and Control',
               subtitle: 'Configuration',
               icon: Icons.camera_alt_outlined,
               onTap: () {
@@ -128,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 20),
             // Kartu "Settings and Personalization"
             FeatureCard(
-              title: 'settings and personalization',
+              title: 'Settings and Personalization',
               icon: Icons.settings_outlined,
               onTap: () {
                 // Ganti ini untuk menavigasi ke SettingsScreen
@@ -215,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           _buildDrawerMenuItem(
             context,
-            title: 'deep focus',
+            title: 'Deep Focus',
             subtitle: 'Configuration',
             icon: Icons.lightbulb_outline,
             onTap: () {
@@ -225,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           _buildDrawerMenuItem(
             context,
-            title: 'activity and productivity tracker',
+            title: 'Activity and Productivity Tracker',
             icon: Icons.timer_outlined,
             onTap: () {
               Navigator.pop(context); // Tutup drawer
@@ -234,7 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           _buildDrawerMenuItem(
             context,
-            title: 'camera visual and control',
+            title: 'Camera Visual and Control',
             subtitle: 'Configuration',
             icon: Icons.camera_alt_outlined,
             onTap: () {
@@ -244,7 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           _buildDrawerMenuItem(
             context,
-            title: 'settings and personalization',
+            title: 'Settings and Personalization',
             icon: Icons.settings_outlined,
             onTap: () {
               Navigator.pop(context); // Tutup drawer
@@ -252,16 +252,36 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           const Divider(color: Colors.white24), // Pemisah
-          ListTile(
-            leading: const Icon(Icons.logout, color: Colors.white54),
-            title: const Text('Logout', style: TextStyle(color: Colors.white)),
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Logging out... (Dummy)")),
+          TextButton.icon(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    backgroundColor: Colors.black,
+                    title: const Text('Logout', style: TextStyle(color: Colors.white)),
+                    content: const Text('Are you sure you want to log out?', style: TextStyle(color: Colors.white70)),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Cancel', style: TextStyle(color: AppColors.primaryColor)),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: const Text('Logout', style: TextStyle(color: AppColors.errorColor)),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Tutup dialog
+                          Navigator.of(context).pushReplacementNamed('/auth'); // Kembali ke halaman login
+                        },
+                      ),
+                    ],
+                  );
+                },
               );
-              Navigator.pop(context); // Tutup drawer
-              Navigator.of(context).pushReplacementNamed('/auth'); // Kembali ke halaman login
             },
+            icon: const Icon(Icons.logout, color: Colors.redAccent),
+            label: const Text('Logout', style: TextStyle(color: Colors.redAccent, fontSize: 16)),
           ),
         ],
       ),
