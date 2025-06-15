@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:smodi/core/constants/colors.dart';
-import 'package:smodi/features/f3_camera_control/widgets/camera_feed_display.dart';
-// import 'package:focus_forge/features/camera_control/widgets/camera_control_buttons.dart'; // Jika ingin dipisah lebih lanjut
+import 'package:camera/camera.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' show join;
+import 'dart:io';
+
+// Import daftar kamera global dari main.dart
+import 'package:smodi/main.dart'; // Tetap impor ini untuk akses 'cameras'
 
 class CameraControlScreen extends StatefulWidget {
   const CameraControlScreen({super.key});
@@ -11,55 +16,193 @@ class CameraControlScreen extends StatefulWidget {
 }
 
 class _CameraControlScreenState extends State<CameraControlScreen> {
-  bool _isCameraActive = false;
+  CameraController? _controller;
+  Future<void>? _initializeControllerFuture;
+
+  bool _isCameraInitialized = false;
   bool _isRecording = false;
   String _cameraStatus = 'Inactive';
-  int _snapshotCount = 0; // Dummy count for snapshots
+  int _snapshotCount = 0;
 
-  // Placeholder untuk simulasi camera feed
-  String _cameraFeedImage = 'assets/images/camera_placeholder_1.png'; // Ganti dengan gambar dummy
-  List<String> _dummyImages = [
-    'assets/images/camera_placeholder_1.png',
-    'assets/images/camera_placeholder_2.png',
-    'assets/images/camera_placeholder_3.png',
-  ];
-  int _currentImageIndex = 0;
+  // Variabel baru untuk melacak arah lensa yang sedang aktif
+  CameraLensDirection _currentLensDirection = CameraLensDirection.back; // Default ke belakang
 
-  void _toggleCamera() {
-    setState(() {
-      _isCameraActive = !_isCameraActive;
-      _cameraStatus = _isCameraActive ? 'Active' : 'Inactive';
-      if (!_isCameraActive) {
-        _isRecording = false; // Stop recording if camera is turned off
+  @override
+  void initState() {
+    super.initState();
+    // Coba inisialisasi kamera depan terlebih dahulu
+    _initializeCamera(CameraLensDirection.front); // Panggil dengan kamera depan
+  }
+
+  // Ubah fungsi inisialisasi untuk menerima arah lensa
+  Future<void> _initializeCamera(CameraLensDirection preferredDirection) async {
+    // Dispose controller yang sudah ada jika ada
+    if (_controller != null) {
+      await _controller!.dispose();
+    }
+
+    if (cameras.isEmpty) {
+      _showSnackbar('No cameras found on this device!', isError: true);
+      setState(() {
+        _isCameraInitialized = false;
+        _cameraStatus = 'No Camera';
+      });
+      return;
+    }
+
+    CameraDescription? selectedCamera;
+    try {
+      selectedCamera = cameras.firstWhere(
+            (description) => description.lensDirection == preferredDirection,
+        // Jika kamera depan tidak ditemukan, gunakan kamera belakang sebagai fallback
+        // HATI-HATI: .firstWhere akan error jika tidak ditemukan tanpa orElse
+        // Jadi, kita akan cek nanti atau menggunakan try-catch di sini
+      );
+    } catch (e) {
+      // Jika kamera depan tidak ditemukan, coba cari kamera belakang
+      try {
+        selectedCamera = cameras.firstWhere(
+              (description) => description.lensDirection == CameraLensDirection.back,
+        );
+        _showSnackbar('Front camera not found, using back camera.', isError: true);
+      } catch (e) {
+        _showSnackbar('No suitable camera found (front or back)!', isError: true);
+        setState(() {
+          _isCameraInitialized = false;
+          _cameraStatus = 'Error';
+        });
+        return;
       }
-      _showSnackbar('Camera ${_isCameraActive ? "Activated" : "Deactivated"}');
+    }
+
+    if (selectedCamera == null) {
+      _showSnackbar('No camera found for initialization!', isError: true);
+      setState(() {
+        _isCameraInitialized = false;
+        _cameraStatus = 'No Camera';
+      });
+      return;
+    }
+
+    _controller = CameraController(
+      selectedCamera, // Gunakan kamera yang terpilih
+      ResolutionPreset.medium,
+      enableAudio: false, // Mungkin tidak perlu audio untuk analisis fokus
+    );
+
+    _initializeControllerFuture = _controller!.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _isCameraInitialized = true;
+        _isRecording = false; // Pastikan status rekaman false saat inisialisasi
+        _cameraStatus = 'Previewing';
+        _currentLensDirection = preferredDirection; // Set arah lensa yang berhasil diinisialisasi
+      });
+      _showSnackbar('${_currentLensDirection == CameraLensDirection.front ? "Front" : "Back"} Camera Activated');
+    }).catchError((e) {
+      if (e is CameraException) {
+        switch (e.code) {
+          case 'CameraAccessDenied':
+            _showSnackbar('Camera access denied. Please grant permission in app settings.', isError: true);
+            break;
+          default:
+            _showSnackbar('Error initializing camera: ${e.description}', isError: true);
+            break;
+        }
+      }
+      setState(() {
+        _isCameraInitialized = false;
+        _cameraStatus = 'Error';
+      });
     });
   }
 
-  void _toggleRecording() {
-    if (!_isCameraActive) {
-      _showSnackbar('Please activate camera first!', isError: true);
-      return;
+  void _toggleCamera() async {
+    // Logika ini sekarang akan menghentikan kamera dan meminta inisialisasi ulang
+    // dengan arah lensa yang sama. Untuk switch depan/belakang, lihat _switchCameraLens()
+    if (_isCameraInitialized) {
+      await _controller!.dispose();
+      setState(() {
+        _isCameraInitialized = false;
+        _isRecording = false;
+        _cameraStatus = 'Inactive';
+        _showSnackbar('Camera Deactivated');
+        _controller = null; // Set controller to null after dispose
+      });
+    } else {
+      await _initializeCamera(_currentLensDirection); // Aktifkan kamera dengan arah lensa saat ini
     }
-    setState(() {
-      _isRecording = !_isRecording;
-      _cameraStatus = _isRecording ? 'Recording' : 'Active';
-      _showSnackbar('Recording ${_isRecording ? "Started" : "Stopped"}');
-    });
   }
 
-  void _takeSnapshot() {
-    if (!_isCameraActive) {
+  // Fungsi baru untuk beralih kamera depan/belakang
+  void _switchCameraLens() async {
+    if (cameras.length < 2) {
+      _showSnackbar('Only one camera found on this device.', isError: true);
+      return;
+    }
+
+    CameraLensDirection newDirection = _currentLensDirection == CameraLensDirection.front
+        ? CameraLensDirection.back
+        : CameraLensDirection.front;
+
+    // Inisialisasi kamera dengan arah lensa yang baru
+    await _initializeCamera(newDirection);
+  }
+
+
+  void _toggleRecording() async {
+    if (!_isCameraInitialized || _controller == null || !_controller!.value.isInitialized) {
       _showSnackbar('Please activate camera first!', isError: true);
       return;
     }
-    setState(() {
-      _snapshotCount++;
-      // Simulate changing camera feed image
-      _currentImageIndex = (_currentImageIndex + 1) % _dummyImages.length;
-      _cameraFeedImage = _dummyImages[_currentImageIndex];
-      _showSnackbar('Snapshot taken! Total: $_snapshotCount');
-    });
+
+    if (_controller!.value.isRecordingVideo) {
+      try {
+        await _controller!.stopVideoRecording();
+        setState(() {
+          _isRecording = false;
+          _cameraStatus = 'Previewing';
+          _showSnackbar('Recording Stopped');
+        });
+      } catch (e) {
+        _showSnackbar('Error stopping recording: $e', isError: true);
+      }
+    } else {
+      try {
+        await _controller!.startVideoRecording();
+        setState(() {
+          _isRecording = true;
+          _cameraStatus = 'Recording';
+          _showSnackbar('Recording Started');
+        });
+      } catch (e) {
+        _showSnackbar('Error starting recording: $e', isError: true);
+      }
+    }
+  }
+
+  void _takeSnapshot() async {
+    if (!_isCameraInitialized || _controller == null || !_controller!.value.isInitialized) {
+      _showSnackbar('Please activate camera first!', isError: true);
+      return;
+    }
+
+    try {
+      final XFile file = await _controller!.takePicture();
+      final Directory appDir = await getApplicationDocumentsDirectory();
+      final String filePath = join(appDir.path, '${DateTime.now().millisecondsSinceEpoch}.png');
+      await file.saveTo(filePath);
+
+      setState(() {
+        _snapshotCount++;
+        _showSnackbar('Snapshot taken and saved to $filePath! Total: $_snapshotCount');
+      });
+    } catch (e) {
+      _showSnackbar('Error taking snapshot: $e', isError: true);
+      print('Snapshot error: $e');
+    }
   }
 
   void _showCameraSettings() {
@@ -68,17 +211,26 @@ class _CameraControlScreenState extends State<CameraControlScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.black,
-          title: const Text('Camera Settings (Dummy)', style: TextStyle(color: Colors.white)),
+          title: const Text('Camera Settings', style: TextStyle(color: Colors.white)),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Resolution: 1080p', style: TextStyle(color: Colors.white70)),
-                SizedBox(height: 10),
-                Text('Frame Rate: 30 FPS', style: TextStyle(color: Colors.white70)),
-                SizedBox(height: 10),
-                Text('Storage Location: Cloud', style: TextStyle(color: Colors.white70)),
-                SizedBox(height: 20),
-                Text('More settings coming soon...', style: TextStyle(color: Colors.white54)),
+                Text(
+                  'Resolution: ${_controller?.resolutionPreset.name ?? 'N/A'}',
+                  style: TextStyle(color: Colors.white70),
+                ),
+                const SizedBox(height: 10),
+                // Text(
+                //   'FPS: ${_controller?.value.fps.toStringAsFixed(0) ?? 'N/A'}',
+                //   style: TextStyle(color: Colors.white70),
+                // ),
+                const SizedBox(height: 10),
+                Text(
+                  'Facing: ${_controller?.description.lensDirection.name ?? 'N/A'}',
+                  style: TextStyle(color: Colors.white70),
+                ),
+                const SizedBox(height: 20),
+                const Text('More settings coming soon...', style: TextStyle(color: Colors.white54)),
               ],
             ),
           ),
@@ -106,11 +258,17 @@ class _CameraControlScreenState extends State<CameraControlScreen> {
   }
 
   @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.headingText,
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: AppColors.headingText,
+        backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         elevation: 0,
         title: const Text('Camera Control (F3)'),
@@ -126,39 +284,67 @@ class _CameraControlScreenState extends State<CameraControlScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Tampilan Feed Kamera
-            Container(
-              height: 250, // Tinggi tetap untuk feed kamera
-              decoration: BoxDecoration(
-                color: Colors.grey[900], // Warna latar belakang saat tidak aktif
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: Colors.white.withOpacity(0.2)),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: _isCameraActive
-                    ? CameraFeedDisplay(imageUrl: _cameraFeedImage)
-                    : Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.videocam_off, size: 60, color: Colors.white30),
-                      const SizedBox(height: 10),
-                      Text('Camera $_cameraStatus', style: const TextStyle(color: Colors.white54)),
-                    ],
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[900],
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: Colors.white.withOpacity(0.2)),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: FutureBuilder<void>(
+                    future: _initializeControllerFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        if (_isCameraInitialized && _controller != null && _controller!.value.isInitialized) {
+                          return CameraPreview(_controller!);
+                        } else {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.videocam_off, size: 60, color: Colors.white30),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Camera $_cameraStatus',
+                                  style: const TextStyle(color: Colors.white54),
+                                ),
+                                if (snapshot.hasError)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Text(
+                                      'Error: ${snapshot.error}',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: Colors.red[300], fontSize: 12),
+                                    ),
+                                  ),
+                                const SizedBox(height: 10),
+                                const Text(
+                                  'Tap "Activate" or "Switch Camera" to try again, or check app permissions.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.white54, fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      } else {
+                        return const Center(child: CircularProgressIndicator(color: AppColors.primaryColor));
+                      }
+                    },
                   ),
                 ),
               ),
             ),
             const SizedBox(height: 20),
 
-            // Indikator Status Kamera
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  _isCameraActive ? Icons.fiber_manual_record : Icons.circle,
-                  color: _isCameraActive ? Colors.green : Colors.red,
+                  _isCameraInitialized ? Icons.fiber_manual_record : Icons.circle,
+                  color: _isCameraInitialized ? Colors.green : Colors.red,
                   size: 16,
                 ),
                 const SizedBox(width: 8),
@@ -166,18 +352,28 @@ class _CameraControlScreenState extends State<CameraControlScreen> {
                   'Status: $_cameraStatus',
                   style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
+                const SizedBox(width: 15),
+                Icon(
+                  _currentLensDirection == CameraLensDirection.front ? Icons.face : Icons.camera_alt,
+                  color: Colors.white54,
+                  size: 16,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  'Facing: ${_currentLensDirection == CameraLensDirection.front ? "Front" : "Back"}',
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                ),
               ],
             ),
             const SizedBox(height: 30),
 
-            // Tombol Kontrol Kamera
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildControlButton(
-                  icon: _isCameraActive ? Icons.videocam_off : Icons.videocam,
-                  label: _isCameraActive ? 'Deactivate' : 'Activate',
-                  color: _isCameraActive ? AppColors.errorColor : AppColors.successColor,
+                  icon: _isCameraInitialized ? Icons.videocam_off : Icons.videocam,
+                  label: _isCameraInitialized ? 'Deactivate' : 'Activate',
+                  color: _isCameraInitialized ? AppColors.errorColor : AppColors.successColor,
                   onPressed: _toggleCamera,
                 ),
                 _buildControlButton(
@@ -194,9 +390,29 @@ class _CameraControlScreenState extends State<CameraControlScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20), // Tambahkan sedikit jarak
 
-            // Informasi Tambahan/Log Snapshots (Dummy)
+            // Tombol Switch Camera
+            Center( // Posisikan di tengah
+              child: ElevatedButton.icon(
+                onPressed: _switchCameraLens,
+                icon: const Icon(Icons.switch_camera_outlined, color: Colors.white),
+                label: Text(
+                  _currentLensDirection == CameraLensDirection.front ? 'Switch to Back Camera' : 'Switch to Front Camera',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueGrey[700], // Warna yang berbeda
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 30), // Jarak ke bawah
+
+            // Informasi Tambahan/Log Snapshots (tetap di bawah)
             const Text(
               'Recent Snapshots:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
@@ -221,7 +437,6 @@ class _CameraControlScreenState extends State<CameraControlScreen> {
             ElevatedButton.icon(
               onPressed: () {
                 _showSnackbar('Changing capture mode (Coming Soon)!');
-                // Implementasi untuk mengubah mode (misalnya, analisis fokus vs. rekaman biasa)
               },
               icon: const Icon(Icons.video_camera_back_outlined, color: Colors.white),
               label: const Text('Change Capture Mode', style: TextStyle(color: Colors.white)),
@@ -248,7 +463,7 @@ class _CameraControlScreenState extends State<CameraControlScreen> {
     return Column(
       children: [
         FloatingActionButton(
-          heroTag: label, // Penting untuk unique tag jika ada banyak FAB
+          heroTag: label, // Penting untuk unique tag jika ada beberapa FAB
           onPressed: onPressed,
           backgroundColor: color,
           foregroundColor: Colors.white,
